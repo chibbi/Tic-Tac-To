@@ -5,6 +5,7 @@ a simple Tic Tac To Game, written in Java
  - [ ] Create Win
  - [ ] Create Lose
  - [ ] Add Two Player Mode
+ - [ ] Work out the remaining Bug/s
  - [ ] Add Networking choose:
    - [ ] UDP
    - [ ] TCP
