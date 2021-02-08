@@ -92,12 +92,12 @@ class StartGame {
             if (input == "") {
                 input = reader.readLine();
             }
-            String[] splitted = input.split(",");
+            String[] splittedInput = input.split(",");
             // make - 1 an Option (that is just there for not so tech savvy people,
             // because the arrays start at 0, but with - 1 you can
             // count from 1)
-            y = Integer.parseInt(splitted[0]) - 1;
-            x = Integer.parseInt(splitted[1]) - 1;
+            y = Integer.parseInt(splittedInput[0]) - 1;
+            x = Integer.parseInt(splittedInput[1]) - 1;
             if (x <= 2 && y <= 2) {
                 if (gameField[x][y] == 0) {
                     isAvailable = true;
