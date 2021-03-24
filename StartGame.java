@@ -8,6 +8,8 @@ class StartGame {
     // int[y][x]
     private static int[][] gameField = new int[3][3];
     private static boolean isFinished = false;
+    private static String serverIp = "localhost";
+    private static String serverPort = "localhost";
 
     public static void main(String[] args) {
         initializeGame();
@@ -16,6 +18,22 @@ class StartGame {
     }
 
     private static void initializeGame() {
+        // TODO: get the field from server ?
+        System.out.println("where is your Server located? (Ip:Port)");
+        try {
+            BufferedReader reader = new BufferedReader(new InputStreamReader(System.in));
+            String input = reader.readLine();
+            if (input == "") {
+                input = reader.readLine();
+            }
+            String[] splittedInput = input.split(":");
+            serverIp = splittedInput[0];
+            serverPort = splittedInput[1];
+        } catch (IOException e) {
+            System.out.println("Couldn't read your input");
+            System.out.println(e.getMessage());
+        }
+        // TODO: ask if singleplayer or multiplayer
         for (int i = 0; i < gameField.length; i++) {
             for (int j = 0; j < gameField[i].length; j++) {
                 gameField[i][j] = 0;
@@ -67,6 +85,7 @@ class StartGame {
     }
 
     private static void turnKi() {
+        // TODO: change out with get turn from Server
         boolean isAvailable = false;
         int i = 0;
         int j = 0;
@@ -86,6 +105,7 @@ class StartGame {
         boolean isAvailable = false;
         int x = 0;
         int y = 0;
+        // TODO: this will have to get verified by the server
         while (!isAvailable) {
             BufferedReader reader = new BufferedReader(new InputStreamReader(System.in));
             String input = reader.readLine();
@@ -110,6 +130,7 @@ class StartGame {
             }
         }
         gameField[x][y] = 1;
+        // TODO: send move to Server
     }
 
 }
