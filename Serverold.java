@@ -3,7 +3,7 @@ import java.io.IOException;
 import java.io.InputStreamReader;
 import java.util.Random;
 
-class Server {
+class Serverold {
 
     // int[y][x]
     private static int[][] gameField = new int[3][3];
