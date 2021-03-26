@@ -29,6 +29,7 @@ class testClient {
         byte[] buf = new byte[512];
         DatagramPacket packet = new DatagramPacket(buf, buf.length);
         while (isActive) {
+            new Thread(input).start();
             // clean buffer
             buf = new byte[512];
             packet = new DatagramPacket(buf, buf.length);
