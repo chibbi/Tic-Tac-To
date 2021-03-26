@@ -11,6 +11,7 @@ class testClient {
 
     private static DatagramSocket socket;
     private static InetAddress address;
+    private static boolean isActive = true;
 
     public static void main(String[] args) {
         System.out.println("Client started");
@@ -24,33 +25,10 @@ class testClient {
             System.out.println("Couldn't connect to Server");
             System.out.println(es.getMessage());
         }
-        while (true) {
-            // clean buffer
-            byte[] buf = new byte[512];
-            BufferedReader reader = new BufferedReader(new InputStreamReader(System.in));
-            String input = "";
-            try {
-                input = reader.readLine();
-                if (input == "") {
-                    input = reader.readLine();
-                }
-            } catch (IOException e) {
-                // TODO Auto-generated catch block
-                e.printStackTrace();
-            }
-            System.out.println("Read input (" + input + ")");
-            if (input.equals("/stopclient")) {
-                break;
-            }
-            buf = input.getBytes();
-            DatagramPacket packet = new DatagramPacket(buf, buf.length, address, 5678);
-            try {
-                socket.send(packet);
-            } catch (IOException e1) {
-                // TODO Auto-generated catch block
-                e1.printStackTrace();
-            }
-            System.out.println("Send message: " + new String(packet.getData(), 0, packet.getLength()));
+        InputThread input = new InputThread(socket, address);
+        byte[] buf = new byte[512];
+        DatagramPacket packet = new DatagramPacket(buf, buf.length);
+        while (isActive) {
             // clean buffer
             buf = new byte[512];
             packet = new DatagramPacket(buf, buf.length);
@@ -61,9 +39,49 @@ class testClient {
                 e.printStackTrace();
             }
             String received = new String(packet.getData(), 0, packet.getLength());
-            System.out.println("Received Package message: " + received);
+            System.out.println(received);
         }
         System.out.println("Server stopped");
         socket.close();
+    }
+}
+
+class InputThread extends Thread {
+    private DatagramSocket socket;
+    private InetAddress address;
+    private byte[] buf;
+    private DatagramPacket packet;
+
+    InputThread(DatagramSocket socketIn, InetAddress addressIn) {
+        this.socket = socketIn;
+        this.address = addressIn;
+    }
+
+    public void run() {
+        // clean buffer
+        buf = new byte[512];
+        BufferedReader reader = new BufferedReader(new InputStreamReader(System.in));
+        String input = "";
+        try {
+            input = reader.readLine();
+            if (input == "") {
+                input = reader.readLine();
+            }
+        } catch (IOException e) {
+            // TODO Auto-generated catch block
+            e.printStackTrace();
+        }
+        if (input.equals("/stopclient")) {
+            // TODO: Stop the whole Client (i may should just put the output in a thread and
+            // leave input in main)
+        }
+        buf = input.getBytes();
+        packet = new DatagramPacket(buf, buf.length, address, 5678);
+        try {
+            socket.send(packet);
+        } catch (IOException e1) {
+            // TODO Auto-generated catch block
+            e1.printStackTrace();
+        }
     }
 }

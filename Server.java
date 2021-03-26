@@ -4,20 +4,19 @@ import java.net.DatagramSocket;
 import java.net.InetAddress;
 import java.net.SocketException;
 
-class Matchmaker {
+class Server {
 
     private static DatagramSocket socket;
     private static InetAddress[] playerAddress = new InetAddress[2];
-    private static Integer[] playerPort = new Integer[2];
+    private static int[] playerPort = new int[2];
     private static int currentPlayer = 0;
     private static byte[] buf = new byte[512];
     private static boolean isActive = true;
-    private static String message = "";
 
     public static void main(String[] args) {
         // open new Socket
         try {
-            socket = new DatagramSocket(5678);
+            socket = new DatagramSocket(6789);
         } catch (SocketException e) {
             System.out.println("Server couldn't be created");
             System.out.println(e.getMessage());
@@ -25,7 +24,6 @@ class Matchmaker {
         System.out.println("Server started");
         while (isActive) {
             // clean buffer
-            message = "";
             buf = new byte[512];
             // create packet to store message in
             DatagramPacket packet = new DatagramPacket(buf, buf.length);
@@ -47,59 +45,36 @@ class Matchmaker {
             if (received.equals("/stopserver")) {
                 isActive = false;
             }
-            message += ("Player " + currentPlayer + " :" + received);
-            // TODO: this is not automatic, if i'd change Player size i would have to change
-            // this as well
-            // please make it so that is not needed (i will forget this for sure xD)
-            if (currentPlayer == 1) {
-                System.out.println("Sending Players onto a Game Server");
-                // TODO: have a list of all servers, find a free one, give them the IP of that
-                // Server
-                message += ("\nNew Server:" + "127.0.0.1,6789");
-            }
+            // clean buffer
+            buf = new byte[512];
+            // send message back
+            packet.setAddress(playerAddress[currentPlayer]);
+            packet.setPort(playerPort[currentPlayer]);
+            packet.setData(("This is hello from Server to Player " + currentPlayer).getBytes());
             try {
-                int i = 0;
-                System.out.println(arrayToString(playerPort));
-                for (InetAddress player : playerAddress) {
-                    // clean buffer
-                    buf = new byte[512];
-                    // send message back
-                    if (player != null) {
-                        packet.setAddress(player);
-                        packet.setPort(playerPort[i]);
-                        packet.setData(message.getBytes());
-                        socket.send(packet);
-                    }
-                    i++;
-                }
+                socket.send(packet);
             } catch (IOException e) {
                 System.out.println("Server couldn't send Message");
                 System.out.println(e.getMessage());
             }
+
         }
         System.out.println("Server stopped");
         socket.close();
     }
 
     private static void findPlayer(InetAddress inetAddress, int port) {
-        // find a Player
-        int i = 0;
-        for (InetAddress player : playerAddress) {
-            System.out.println(port + "==" + playerPort[i]);
-            if (inetAddress.equals(player) && port == playerPort[i]) {
-                currentPlayer = i;
-                return;
-            } else if (null == player && null == playerPort[i]) {
-                currentPlayer = i;
-                return;
-            }
-            i++;
+        System.out.println(inetAddress + " == " + playerAddress[currentPlayer]);
+        System.out.println(arrayToString(playerAddress));
+        if (playerAddress[currentPlayer] == null) {
+        } else if (!inetAddress.equals(playerAddress[currentPlayer]) || port != playerPort[currentPlayer]) {
+            switchPlayer();
+            findPlayer(inetAddress, port);
+        } else {
         }
-        switchPlayer();
     }
 
     private static void switchPlayer() {
-        // switch to the next Player (just go through the Array)
         System.out.println(currentPlayer + " == " + playerAddress.length);
         if (currentPlayer == playerAddress.length - 1) {
             currentPlayer = 0;
@@ -109,9 +84,6 @@ class Matchmaker {
     }
 
     private static <T> String arrayToString(T[] array) {
-        // so i can see the content of an Array of generic type
-        // (string[],Integer[],InetAddress[], ...)
-        // helpful for debugging
         String output = "[";
         for (T single : array) {
             if (single == null) {
