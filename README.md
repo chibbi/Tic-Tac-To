@@ -1,12 +1,9 @@
 # Tic-Tac-To
 a simple Tic Tac To Game, written in Java
 
+it is currently getting its expansion to multiplayer via the UDP protocoll.
+
 ### TODO:
  - [ ] Create Win
  - [ ] Create Lose
- - [ ] Add Two Player Mode
  - [ ] Work out the remaining Bug/s
- - [ ] Add Networking choose:
-   - [ ] UDP
-   - [ ] TCP
-   - [ ] HTTP requests
