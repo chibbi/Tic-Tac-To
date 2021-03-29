@@ -6,10 +6,7 @@ import java.net.DatagramSocket;
 import java.net.InetAddress;
 import java.net.SocketException;
 import java.net.UnknownHostException;
-import java.util.logging.Formatter;
-import java.util.logging.Handler;
 import java.util.logging.Level;
-import java.util.logging.LogRecord;
 import java.util.logging.Logger;
 
 class testClient {
@@ -20,7 +17,6 @@ class testClient {
 
     public static void main(String[] args) {
         logger = Logger.getGlobal();
-        setFormatter();
         logger.info("Client started");
         try {
             socket = new DatagramSocket();
@@ -41,41 +37,6 @@ class testClient {
         // and then do this =>
         // logger.info("Server stopped");
         // socket.close();
-    }
-
-    // TODO: format that output of logging to read it easier
-    private static void setFormatter() {
-        Formatter formatter = new Formatter() {
-
-            @Override
-            public String format(LogRecord logRecord) {
-                return String.format("Level: %s, message: %s", logRecord.getLevel(), logRecord.getMessage());
-            }
-
-        };
-        Handler handler = new Handler() {
-
-            @Override
-            public void close() throws SecurityException {
-                // TODO Auto-generated method stub
-
-            }
-
-            @Override
-            public void flush() {
-                // TODO Auto-generated method stub
-
-            }
-
-            @Override
-            public void publish(LogRecord arg0) {
-                // TODO Auto-generated method stub
-
-            }
-
-        };
-        handler.setFormatter(formatter);
-        logger.addHandler(handler);
     }
 }
 
@@ -108,8 +69,7 @@ class InputThread extends Thread {
                 logger.log(Level.SEVERE, e.getLocalizedMessage());
             }
             if (input.equals("/stopclient")) {
-                // TODO: Stop the whole Client (i may should just put the output in a thread and
-                // leave input in main)
+                // TODO: Stop the whole Client (i may should just leave input in main thread)
             }
             buf = input.getBytes();
             packet = new DatagramPacket(buf, buf.length, address, 5678);
