@@ -4,4 +4,4 @@ a simple Tic Tac To Game, written in Java
 it is currently getting its expansion to multiplayer via the UDP protocoll.
 
 
-#### I am pretty sure, that the way i use UDP is completly idiotic, and even though i dont want to use TCP, i probably will XD or i change it to be a peer to peer game (which makes more sense anyway, i just wanted to avoid it)
+#### currently writing my own UDP "Library" and stuff for that, when i am satisfied with that "Library", i will use it to create the Tic-Tac-To multiplayer.
